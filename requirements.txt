@@ -1,0 +1,4 @@
+# Thor is a Bash project and has no Python package runtime dependencies.
+# External CLI dependencies are checked with: thor doctor
+# Required CLIs: bash, git, curl, wget, grep, sed, awk, jq, subfinder, sublist3r, paramspider, dalfox
+# Optional CLIs: httpx, gau, waymore, katana, zenity, yad, shellcheck, shfmt

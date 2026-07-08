@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build clean archives
+        shell: bash
+        run: |
+          mkdir -p dist
+          tar \
+            --exclude='.git' \
+            --exclude='dist' \
+            --exclude='results/*' \
+            --exclude='logs/*' \
+            --exclude='tmp' \
+            -czf "dist/thor-${GITHUB_REF_NAME}.tar.gz" .
+          zip -r "dist/thor-${GITHUB_REF_NAME}.zip" . \
+            -x '.git/*' 'dist/*' 'results/*' 'logs/*' 'tmp/*'
+      - name: Upload release artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*

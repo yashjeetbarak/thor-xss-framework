@@ -1,0 +1,40 @@
+# Runtime output
+results/**
+!results/.gitkeep
+logs/**
+!logs/.gitkeep
+tmp/
+*.log
+*.tmp
+*.bak
+*.old
+*.backup*
+*.stderr
+*.stdout
+
+# Local configuration / secrets
+.env
+.env.*
+!.env.example
+*.cookie
+*cookies*
+*token*
+*secret*
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archives and release output
+*.zip
+*.tar.gz
+dist/
+
+# Python caches from optional tools/report experiments
+__pycache__/
+*.pyc
+.pytest_cache/
