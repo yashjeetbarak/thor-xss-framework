@@ -1,0 +1,7 @@
+shell=bash
+external-sources=true
+
+# Thor is a modular Bash framework.
+# Some variables and sourced files are resolved at runtime through config.conf,
+# state files, and plugin discovery.
+disable=SC1090,SC1091,SC2034,SC2154,SC2164,SC2317
