@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thor Command Deck</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to command deck</a>
+  <div class="app-shell">
+    <aside class="rail" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" role="img"><path d="M9 6h22l-5.2 6.2H14.2L9 6Zm9.5 8.5h3v12h-3v-12ZM8 27h24v6H8v-6Z"/></svg>
+        </div>
+        <div>
+          <strong>Thor</strong>
+          <span>Command Deck</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-panel="scan" aria-pressed="true"><span>01</span> Strike</button>
+        <button class="nav-item" data-panel="history" aria-pressed="false"><span>02</span> History</button>
+        <button class="nav-item" data-panel="reports" aria-pressed="false"><span>03</span> Evidence</button>
+        <button class="nav-item" data-panel="settings" aria-pressed="false"><span>04</span> System</button>
+      </nav>
+
+      <section class="rail-card mission-card">
+        <span class="eyebrow">Guardrail</span>
+        <h2>Authorized testing only</h2>
+        <p>The UI invokes <code>thor.sh</code>. No recon or XSS logic is duplicated in the browser.</p>
+      </section>
+
+      <section class="rail-card compact">
+        <span class="eyebrow">Keys</span>
+        <p><kbd>Ctrl</kbd><kbd>Enter</kbd> Launch</p>
+        <p><kbd>Ctrl</kbd><kbd>K</kbd> Target</p>
+        <p><kbd>Esc</kbd> Stop</p>
+      </section>
+
+      <button class="theme-toggle" id="themeToggle" type="button">Switch to light mode</button>
+    </aside>
+
+    <main id="main" class="workspace">
+      <header class="command-hero">
+        <div class="hero-title-block">
+          <p class="eyebrow">Thor Workbench</p>
+          <h1>Scoped recon. Dalfox strike. Evidence reports.</h1>
+        </div>
+        <div class="hero-actions">
+          <div class="health-card" aria-live="polite">
+            <span class="status-dot idle" id="statusDot"></span>
+            <div>
+              <strong id="connectionState">Local UI ready</strong>
+              <small id="healthMeta">Waiting for command</small>
+            </div>
+          </div>
+          <div class="button-row hero-buttons">
+            <button class="ghost" id="doctorButton" type="button">Doctor</button>
+            <button class="ghost" id="versionButtonTop" type="button">Version</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel active" id="panel-scan" aria-labelledby="scan-title">
+        <div class="section-title tight">
+          <div>
+            <span class="eyebrow">Input → Validate → Execute</span>
+            <h2 id="scan-title">Strike console</h2>
+          </div>
+        </div>
+
+        <div class="scan-layout">
+          <form id="scanForm" class="scan-card">
+            <div class="target-line">
+              <label class="field target-field">
+                <span>Authorized target domain</span>
+                <input id="target" name="target" autocomplete="off" placeholder="example.com" spellcheck="false">
+              </label>
+              <label class="confirm inline-confirm">
+                <input type="checkbox" id="authorized" required>
+                <span>Authorized</span>
+              </label>
+            </div>
+
+            <div class="preset-strip" role="group" aria-label="Scan presets">
+              <button type="button" class="preset" data-preset="quick"><strong>Rapid</strong><span>Low noise</span></button>
+              <button type="button" class="preset active" data-preset="balanced"><strong>Balanced</strong><span>Recommended</span></button>
+              <button type="button" class="preset" data-preset="deep"><strong>Siege</strong><span>Deep scan</span></button>
+            </div>
+
+            <div class="form-section split compact-grid">
+              <label class="field">
+                <span>Workers</span>
+                <input id="workers" name="workers" inputmode="numeric" value="25">
+              </label>
+              <label class="field">
+                <span>Timeout</span>
+                <input id="timeout" name="timeout" inputmode="numeric" value="8">
+              </label>
+              <label class="field">
+                <span>Batch</span>
+                <input id="batchSize" name="batchSize" inputmode="numeric" value="250">
+              </label>
+              <label class="field">
+                <span>Retries</span>
+                <input id="retries" name="retries" inputmode="numeric" value="1">
+              </label>
+              <label class="field">
+                <span>Delay</span>
+                <input id="delay" name="delay" inputmode="numeric" value="0">
+              </label>
+              <label class="field">
+                <span>Method</span>
+                <select id="method" name="method">
+                  <option value="">Default</option>
+                  <option value="GET">GET</option>
+                  <option value="POST">POST</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="toggle-grid full">
+              <label><input type="checkbox" id="safeDalfox" checked> Safe Dalfox</label>
+              <label><input type="checkbox" id="scopeOnly" checked> Scope-only</label>
+              <label><input type="checkbox" id="verbose"> Verbose</label>
+              <label><input type="checkbox" id="rawJson"> Raw JSON</label>
+              <label><input type="checkbox" id="disableGau"> Skip gau</label>
+              <label><input type="checkbox" id="disableWaymore"> Skip waymore</label>
+              <label><input type="checkbox" id="disableKatana"> Skip katana</label>
+              <label><input type="checkbox" id="disableDalfoxPrecheck"> Skip precheck</label>
+            </div>
+
+            <details class="advanced full">
+              <summary>Advanced request options</summary>
+              <div class="advanced-grid">
+                <label class="field wide">
+                  <span>User-Agent</span>
+                  <input id="userAgent" name="userAgent" placeholder="Thor/1.1">
+                </label>
+                <label class="field wide">
+                  <span>Proxy</span>
+                  <input id="proxy" name="proxy" placeholder="http://127.0.0.1:8080">
+                </label>
+                <label class="field wide">
+                  <span>Cookie</span>
+                  <input id="cookie" name="cookie" placeholder="SESSION=...">
+                </label>
+                <label class="field wide">
+                  <span>Payload file</span>
+                  <input id="payloadFile" name="payloadFile" placeholder="payloads/xss.txt">
+                </label>
+                <label class="field wide full-line">
+                  <span>Headers, one per line</span>
+                  <textarea id="headers" name="headers" rows="3" placeholder="Authorization: Bearer ..."></textarea>
+                </label>
+              </div>
+            </details>
+
+            <div class="command-preview full">
+              <div>
+                <span class="eyebrow">Command preview</span>
+                <code id="commandPreview">thor scan example.com --authorized</code>
+              </div>
+              <button type="button" class="ghost small" id="copyCommandButton">Copy</button>
+            </div>
+
+            <div class="actions full">
+              <button type="submit" class="primary" id="runButton">Launch Thor</button>
+              <button type="button" class="danger" id="stopButton" disabled>Stop</button>
+              <button type="button" class="ghost" id="copyOutputButton">Copy Console</button>
+            </div>
+          </form>
+
+          <aside class="live-stack" aria-label="Live scan telemetry">
+            <div class="metrics-grid" aria-label="Live metrics">
+              <div class="metric"><span>Progress</span><strong id="metricProgress">0%</strong></div>
+              <div class="metric"><span>Subdomains</span><strong id="metricSubdomains">—</strong></div>
+              <div class="metric"><span>URLs</span><strong id="metricUrls">—</strong></div>
+              <div class="metric"><span>Findings</span><strong id="metricFindings">—</strong></div>
+            </div>
+
+            <div class="progress-card">
+              <div class="progress-meta">
+                <span id="runStatus">Idle</span>
+                <span id="runTime">00:00</span>
+              </div>
+              <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+            </div>
+
+            <div class="rules-card">
+              <span class="eyebrow">Discipline</span>
+              <ul>
+                <li>Scope-only targets.</li>
+                <li>Batched Dalfox execution.</li>
+                <li>Evidence-based reports.</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+
+        <section class="console-card" aria-labelledby="console-title">
+          <div class="console-toolbar">
+            <div>
+              <span class="eyebrow">Streaming Output</span>
+              <h3 id="console-title">Live console</h3>
+            </div>
+            <div class="console-tools">
+              <div class="segmented" role="group" aria-label="Console stream filter">
+                <button type="button" class="segment active" data-stream="all">All</button>
+                <button type="button" class="segment" data-stream="stdout">STDOUT</button>
+                <button type="button" class="segment" data-stream="stderr">STDERR</button>
+              </div>
+              <input id="consoleSearch" placeholder="Filter console…" aria-label="Filter console output">
+              <button class="ghost small" id="clearConsole" type="button">Clear</button>
+            </div>
+          </div>
+          <pre id="console" class="console" tabindex="0" aria-live="polite"></pre>
+        </section>
+      </section>
+
+      <section class="panel" id="panel-history" aria-labelledby="history-title">
+        <div class="section-title">
+          <div>
+            <span class="eyebrow">Timeline</span>
+            <h2 id="history-title">Run history</h2>
+          </div>
+          <button class="ghost" id="refreshHistory" type="button">Refresh</button>
+        </div>
+        <div class="history-toolbar">
+          <input id="historySearch" placeholder="Search history by domain or scan time…">
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+
+      <section class="panel" id="panel-reports" aria-labelledby="reports-title">
+        <div class="section-title">
+          <div>
+            <span class="eyebrow">Evidence</span>
+            <h2 id="reports-title">Reports and generated files</h2>
+          </div>
+          <button class="ghost" id="refreshFiles" type="button">Refresh files</button>
+        </div>
+        <div id="selectedRun" class="selected-run">Select a scan from History to inspect generated files.</div>
+        <div id="summaryCards" class="summary-cards"></div>
+        <div id="fileList" class="file-grid"></div>
+        <article class="viewer-card">
+          <div class="console-toolbar">
+            <div>
+              <span class="eyebrow">File Preview</span>
+              <h3 id="viewerTitle">No file selected</h3>
+            </div>
+            <div class="button-row">
+              <button class="ghost small" id="copyFileButton" type="button">Copy file</button>
+              <button class="ghost small" id="downloadFileButton" type="button">Download</button>
+            </div>
+          </div>
+          <pre id="fileViewer" class="file-viewer" tabindex="0"></pre>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-settings" aria-labelledby="settings-title">
+        <div class="section-title">
+          <div>
+            <span class="eyebrow">Integration</span>
+            <h2 id="settings-title">Local CLI bridge</h2>
+          </div>
+          <button class="ghost" id="versionButton" type="button">Check Thor version</button>
+        </div>
+        <div class="settings-grid" id="settingsGrid"></div>
+        <div class="note-block">
+          <strong>Security model:</strong> the local Node bridge builds explicit argument arrays and calls the existing Bash CLI. The CLI remains the single source of truth.
+        </div>
+      </section>
+    </main>
+
+    <aside class="inspector" aria-label="Execution inspector">
+      <div class="inspector-head">
+        <span class="eyebrow">Run Status</span>
+        <strong id="activeRunLabel">No active run</strong>
+      </div>
+      <dl class="meta-list">
+        <div><dt>Status</dt><dd id="metaStatus">Idle</dd></div>
+        <div><dt>Run ID</dt><dd id="metaRunId">—</dd></div>
+        <div><dt>Command</dt><dd id="metaCommand">—</dd></div>
+        <div><dt>Started</dt><dd id="metaStarted">—</dd></div>
+        <div><dt>Exit code</dt><dd id="metaExit">—</dd></div>
+      </dl>
+      <div class="side-section">
+        <div class="side-title">Generated files</div>
+        <div id="recentFiles" class="recent-files">No files selected.</div>
+      </div>
+      <div class="side-section compact-note">
+        <div class="side-title">Rule</div>
+        <p class="muted">Keep scope-only enabled unless you own every linked asset.</p>
+      </div>
+    </aside>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
